@@ -7,8 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Treasure Hunt</title>
 
-  <!-- <script src="js/aframe-ar.js"></script>
-  <script src="/js/aframe.min.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
   <style>
     body {
@@ -86,48 +85,76 @@
 </head>
 
 <body style="font-family:Arial, Helvetica, sans-serif; background-color: #f5f5f5;">
-  <div class="top-bar">
-    <span>App</span>
-    <div style="display: flex; align-items: center;">
-      <img src="icons/baseline-star-24px.png" alt="" srcset="">
-      <span style="margin-left: 8px;">100 Point</span>
+  <div id="app">
+    <div class="top-bar">
+      <span>App</span>
+      <div style="display: flex; align-items: center;">
+        <img src="icons/baseline-star-24px.png" alt="" srcset="">
+        <span style="margin-left: 8px;">{{ getPoint }} Point</span>
+      </div>
     </div>
+  
+    <h2 style="margin-left: 16px">Treasure</h2>
+  
+    <div id="treasure-list">
+      <div v-for="tr in treasures">
+        <div id="chest-filled" v-if="tr.open"></div>  
+        <div v-else id="chest" style="color: white; display: flex; justify-content: center; align-items: center;">?</div>
+      </div>
+    </div>
+  
+    <div class="bottom-bar">
+      <a href="camera.html" class="btn-bottom-bar">
+        <img src="icons/btn-scan.svg">
+      </a>
+      <a href="index.html" class="btn-bottom-bar">
+        <img src="icons//btn-treasure.svg">
+      </a>
+    </div>
+    
+    <h2 style="text-align: right; margin-right: 16px;">{{ getOpenTreasure }}/{{ treasures.length }}</h2>
   </div>
-
-  <h3 style="margin-left: 16px">Treasures</h3>
-
-  <div id="treasure-list">
-    <!-- <div id="chest"></div> -->
-  </div>
-
-  <div class="bottom-bar">
-    <a href="camera.html" class="btn-bottom-bar">
-      <img src="icons/btn-scan.svg">
-    </a>
-    <a href="index.html" class="btn-bottom-bar">
-      <img src="icons//btn-treasure.svg">
-    </a>
-  </div>
-
-  <h3 style="text-align: right; margin-right: 16px;">0/12</h3>
 
   <script>
-    const treasureList = document.getElementById('treasure-list');
-
-    let chest = '';
-
-    for (let i = 0; i < 12; i++) {
-
-      if (i == 0) {
-        // treasure-chest.png
-        // <img src="icons/baseline-star-24px.png" alt="" srcset="">
-        chest += `<div id="chest-filled"></div>`;
-      } else {
-        chest += `<div id="chest" style="color: white; display: flex; justify-content: center; align-items: center;">?</div>`;
-      }
-    }
-
-    treasureList.innerHTML = chest
+    const app = new Vue({
+      el: '#app',
+      data: {
+        message: 'Hello Vuejs',
+        treasures: [{
+          open: true
+        }, {
+          open: false
+        }, {
+          open: false
+        }, {
+          open: false
+        }, {
+          open: false
+        }, {
+          open: false
+        }, {
+          open: true
+        }, {
+          open: false
+        }, {
+          open: false
+        }, {
+          open: false
+        }, {
+          open: false
+        }, {
+          open: false
+        }],
+      },
+      computed: {
+        getPoint() {
+          return this.treasures.reduce((a, c) => a += c.open ? 1 : 0, 0)*100
+        },
+        getOpenTreasure() {
+          return this.treasures.reduce((a, c) => a += c.open ? 1 : 0, 0)
+        }
+      },
+    });
   </script>
 </body>
 </html>
