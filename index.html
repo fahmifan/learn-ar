@@ -8,6 +8,7 @@
   <title>Treasure Hunt</title>
 
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
   <style>
     body {
@@ -99,7 +100,7 @@
     <div id="treasure-list">
       <div v-for="tr in treasures">
         <div id="chest-filled" v-if="tr.open"></div>  
-        <div v-else id="chest" style="color: white; display: flex; justify-content: center; align-items: center;">?</div>
+        <div v-bind:title="tr.description" v-else id="chest" style="color: white; display: flex; justify-content: center; align-items: center;">{{ tr.name }}</div>
       </div>
     </div>
   
@@ -116,10 +117,14 @@
   </div>
 
   <script>
+    const BASE_URL = 'http://localhost:8080/api'
     const app = new Vue({
       el: '#app',
       data: {
         message: 'Hello Vuejs',
+        user: {
+          token: 'd2c479c07fe03015'
+        },
         treasures: [{
           open: true
         }, {
@@ -146,13 +151,33 @@
           open: false
         }],
       },
+      created() {
+        this.getTreasures()
+      },
+      methods: {
+        async getTreasures() {
+          try {
+            const res = await axios(`${BASE_URL}/treasures`, {
+              method: 'GET',
+              headers: {
+                "Access-Control-Allow-Origin": '*',
+                Authorization: this.user.token,
+              }
+            });
+
+            this.treasures = res.data
+          } catch (e) {
+            console.error(e);
+          }
+        },
+      },
       computed: {
         getPoint() {
           return this.treasures.reduce((a, c) => a += c.open ? 1 : 0, 0)*100
         },
         getOpenTreasure() {
           return this.treasures.reduce((a, c) => a += c.open ? 1 : 0, 0)
-        }
+        },
       },
     });
   </script>
