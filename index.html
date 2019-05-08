@@ -98,9 +98,9 @@
     <h2 style="margin-left: 16px">Treasure</h2>
   
     <div id="treasure-list">
-      <div v-for="tr in treasures">
-        <div id="chest-filled" v-if="tr.open"></div>  
-        <div v-bind:title="tr.description" v-else id="chest" style="color: white; display: flex; justify-content: center; align-items: center;">{{ tr.name }}</div>
+      <div v-for="(tr, idx) in treasures">
+        <div v-on:click="setTrsDesc(tr.description)" id="chest-filled" v-if="tr.open"></div>  
+        <div v-on:click="setTrsDesc(tr.description)" v-bind:title="tr.description" v-else id="chest" style="color: white; display: flex; justify-content: center; align-items: center;">{{ tr.name }}</div>
       </div>
     </div>
   
@@ -114,6 +114,8 @@
     </div>
     
     <h2 style="text-align: right; margin-right: 16px;">{{ getOpenTreasure }}/{{ treasures.length }}</h2>
+
+    <p style="text-align: center">{{ trsDesc }}</p>
   </div>
 
   <script>
@@ -125,36 +127,17 @@
         user: {
           token: 'd2c479c07fe03015'
         },
-        treasures: [{
-          open: true
-        }, {
-          open: false
-        }, {
-          open: false
-        }, {
-          open: false
-        }, {
-          open: false
-        }, {
-          open: false
-        }, {
-          open: true
-        }, {
-          open: false
-        }, {
-          open: false
-        }, {
-          open: false
-        }, {
-          open: false
-        }, {
-          open: false
-        }],
+        trsDesc: '',
+        treasures: [],
       },
       created() {
         this.getTreasures()
       },
       methods: {
+        setTrsDesc(desc) {
+          console.log('click', desc);
+          this.trsDesc = desc;
+        },
         async getTreasures() {
           try {
             const res = await axios(`${BASE_URL}/treasures`, {
@@ -170,6 +153,9 @@
             console.error(e);
           }
         },
+        setDesc(desc) {
+          this.selectedTrs = desc
+        }
       },
       computed: {
         getPoint() {
