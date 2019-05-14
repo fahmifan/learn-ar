@@ -87,35 +87,53 @@
 
 <body style="font-family:Arial, Helvetica, sans-serif; background-color: #f5f5f5;">
   <div id="app">
-    <div class="top-bar">
-      <span>App</span>
-      <div style="display: flex; align-items: center;">
-        <img src="icons/baseline-star-24px.png" alt="" srcset="">
-        <span style="margin-left: 8px;">{{ getPoint }} Point</span>
+    <span v-if='user.auth'>
+      <div class="top-bar">
+        <span>App</span>
+        <div style="display: flex; align-items: center;">
+          <img src="icons/baseline-star-24px.png" alt="" srcset="">
+          <span style="margin-left: 8px;">{{ getPoint }} Point</span>
+        </div>
       </div>
-    </div>
-  
-    <h2 style="margin-left: 16px">Treasure</h2>
-  
-    <div id="treasure-list">
-      <div v-for="(tr, idx) in treasures">
-        <div v-on:click="setLockedTrs()" id="chest-filled" v-if="!tr.isUnlocked"></div>  
-        <div v-else v-on:click="setTrsDesc(tr.description)" v-bind:title="tr.description" id="chest" style="color: white; display: flex; justify-content: center; align-items: center;">{{ tr.name }}</div>
-      </div>
-    </div>
-  
-    <div class="bottom-bar">
-      <a href="camera.html" class="btn-bottom-bar">
-        <img src="icons/btn-scan.svg">
-      </a>
-      <a href="index.html" class="btn-bottom-bar">
-        <img src="icons//btn-treasure.svg">
-      </a>
-    </div>
     
-    <h2 style="text-align: right; margin-right: 16px;">{{ getOpenTreasure }}/{{ treasures.length }}</h2>
+      <h2 style="margin-left: 16px">Treasure</h2>
+    
+      <div id="treasure-list">
+        <div v-for="(tr, idx) in treasures">
+          <div v-on:click="setLockedTrs()" id="chest-filled" v-if="!tr.isUnlocked"></div>  
+          <div v-else v-on:click="setTrsDesc(tr.description)" v-bind:title="tr.description" id="chest" style="color: white; display: flex; justify-content: center; align-items: center;">{{ tr.name }}</div>
+        </div>
+      </div>
+    
+      <div class="bottom-bar">
+        <a href="camera.html" class="btn-bottom-bar">
+          <img src="icons/btn-scan.svg">
+        </a>
+        <a href="index.html" class="btn-bottom-bar">
+          <img src="icons//btn-treasure.svg">
+        </a>
+      </div>
+      
+      <h2 style="text-align: right; margin-right: 16px;">{{ getOpenTreasure }}/{{ treasures.length }}</h2>
 
-    <p style="text-align: center">{{ trsDesc }}</p>
+      <p style="text-align: center">{{ trsDesc }}</p>
+    </span>
+    <span v-else>
+      <h1>Login</h1>
+      <form style='padding: 16px'>
+        <div style='padding: 8px'>
+          <label for="email"><small>Email</small></label> <br />
+          <input name='email' type='email' v-model='user.email' placeholder='youremail@domain.com' />
+        </div>
+
+        <div style='padding: 8px'>
+          <label for="password"><small>Password</small></label> <br />
+          <input name='password' type='password' v-model='user.password' />
+        </div>
+
+        <button type='submit' style='margin: 8px 8px' v-on:click="auth">Submit</button>
+      </form>
+    </span>
   </div>
 
   <script>
@@ -126,13 +144,25 @@
         message: 'Hello Vuejs',
         user: {
           id: '5cd21ee31585bb00298c13c3',
-          token: '23214688caa06af8df76e874cd9ad789244f5cda'
+          token: '23214688caa06af8df76e874cd9ad789244f5cda',
+          email: '',
+          password: '',
         },
         trsDesc: '',
         treasures: [],
-      },  
+      },
       created() {
-        this.getUser()
+        const userInfoStr = localStorage.getItem('userInfo')
+        if (!userInfoStr) return
+
+        try {
+          const userInfo = JSON.parse(userInfoStr);
+          const user = { ...userInfo, auth: true }
+          this.user = user
+          this.getUser({ userID: user._id, token: user.token })
+        } catch (e) {
+          console.error(e);
+        }
       },
       methods: {
         setTrsDesc(desc) {
@@ -141,13 +171,55 @@
         setLockedTrs() {
           this.trsDesc = 'Locked'
         },
-        async getUser() {
+        async auth(e) {
+          e.preventDefault();
+          const email = this.user.email
+          const password = this.user.password
+          if (!email || !password) {
+            window.alert('email or password is invalid')
+            return;
+          }
+
           try {
-            const res = await axios(`${BASE_URL}/user/${this.user.id}`, {
+            const { data } = await axios(`${BASE_URL}/login`, {
+              method: 'POST',
+              data: { email, password } 
+            })
+
+            console.log(data)
+            const userInfo = { ...data.user, token: data.token, auth: true }
+            localStorage.setItem('userInfo', JSON.stringify(userInfo))
+            window.alert('success')
+            this.user = userInfo
+          } catch (e) {
+            if (e.response.status === 500) {
+              window.alert('system error')
+              return
+            }
+            window.alert('email or password incorect')
+            console.error();
+          }
+        },
+        async checkAuth() {
+          const userInfoStr = localStorage.getItem('userInfo')
+          if (!userInfoStr) return
+
+          try {
+            const userInfo = JSON.parse(userInfoStr);
+            this.user = { ...userInfo, auth: true }
+
+            this.getUser()
+          } catch (e) {
+            console.error(e);
+          }
+        },
+        async getUser({ userID, token }) {
+          try {
+            const res = await axios(`${BASE_URL}/user/${userID}`, {
               method: 'GET',
               headers: {
                 "Access-Control-Allow-Origin": '*',
-                Authorization: this.user.token,
+                Authorization: token,
               }
             });
 
