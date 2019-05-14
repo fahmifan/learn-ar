@@ -186,11 +186,12 @@
               data: { email, password } 
             })
 
-            console.log(data)
             const userInfo = { ...data.user, token: data.token, auth: true }
             localStorage.setItem('userInfo', JSON.stringify(userInfo))
             window.alert('success')
             this.user = userInfo
+
+            this.getUser({ userID: userInfo._id, token: userInfo.token })
           } catch (e) {
             if (e.response.status === 500) {
               window.alert('system error')
@@ -232,10 +233,10 @@
       },
       computed: {
         getPoint() {
-          return this.treasures.reduce((a, c) => a += c.open ? 1 : 0, 0)*100
+          return this.treasures.reduce((a, c) => a += c.isUnlocked ? 1 : 0, 0)*100
         },
         getOpenTreasure() {
-          return this.treasures.reduce((a, c) => a += c.open ? 1 : 0, 0)
+          return this.treasures.reduce((a, c) => a += c.isUnlocked ? 1 : 0, 0)
         },
       },
     });
