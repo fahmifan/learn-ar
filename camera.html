@@ -38,18 +38,34 @@
   </a-scene>
 
   <script type="text/javascript">
-    const cube = document.querySelector("#ubbu");
-    cube.addEventListener('click', () => {
-      console.log('ubbu clicked');
-      axios('localhost:8080/api/user/5cd21ee31585bb00298c13c3/treasure/5cd21e0e69a719001ccebe81', {
-        method: 'GET',
+    const BASE_URL = 'http://localhost:8080/api';
+    const token = '23214688caa06af8df76e874cd9ad789244f5cda'
+    const userID = '5cd21ee31585bb00298c13c3'
+    const ubbuInfo = {
+      trsName: '5cd8125eb1853a001c672837',
+      redirURL: 'https://m.facebook.com/pages/Unit-Bola-Basket-Unpad-UBBU/456487121139671?rf=247059598781827'
+    }
+
+    const addTrs = ({ userID, trsName, token, redirURL }) => () => {
+      console.log('clicked', trsName)
+      axios(`${BASE_URL}/user/${userID}/treasure/${trsName}`, {
+        method: 'POST',
         headers: {
-          'Authorization': 'd2c479c07fe03015'
+          'Authorization': token
         }
       }).then(() => {
-        window.location.assign('https://m.facebook.com/pages/Unit-Bola-Basket-Unpad-UBBU/456487121139671?rf=247059598781827');
+        window.alert('Success add Ubbu')
+        // window.location.assign(redirURL);
       })
-    });
+    }
+
+    const ubbuDOM = document.querySelector("#ubbu");
+    ubbuDOM.addEventListener('click', addTrs({
+      userID,
+      token,
+      trsName: ubbuInfo.trsName,
+      redirURL: ubbuInfo.redirURL
+    }));
 
     const chest = document.querySelector("#chest");
     chest.addEventListener('click', () => {
