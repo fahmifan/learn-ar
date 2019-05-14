@@ -99,8 +99,8 @@
   
     <div id="treasure-list">
       <div v-for="(tr, idx) in treasures">
-        <div v-on:click="setTrsDesc(tr.description)" id="chest-filled" v-if="tr.open"></div>  
-        <div v-on:click="setTrsDesc(tr.description)" v-bind:title="tr.description" v-else id="chest" style="color: white; display: flex; justify-content: center; align-items: center;">{{ tr.name }}</div>
+        <div v-on:click="setLockedTrs()" id="chest-filled" v-if="!tr.isUnlocked"></div>  
+        <div v-else v-on:click="setTrsDesc(tr.description)" v-bind:title="tr.description" id="chest" style="color: white; display: flex; justify-content: center; align-items: center;">{{ tr.name }}</div>
       </div>
     </div>
   
@@ -125,22 +125,25 @@
       data: {
         message: 'Hello Vuejs',
         user: {
-          token: 'd2c479c07fe03015'
+          id: '5cd21ee31585bb00298c13c3',
+          token: '23214688caa06af8df76e874cd9ad789244f5cda'
         },
         trsDesc: '',
         treasures: [],
-      },
+      },  
       created() {
-        this.getTreasures()
+        this.getUser()
       },
       methods: {
         setTrsDesc(desc) {
-          console.log('click', desc);
           this.trsDesc = desc;
         },
-        async getTreasures() {
+        setLockedTrs() {
+          this.trsDesc = 'Locked'
+        },
+        async getUser() {
           try {
-            const res = await axios(`${BASE_URL}/treasures`, {
+            const res = await axios(`${BASE_URL}/user/${this.user.id}`, {
               method: 'GET',
               headers: {
                 "Access-Control-Allow-Origin": '*',
@@ -148,14 +151,12 @@
               }
             });
 
-            this.treasures = res.data
+            this.treasures = res.data.treasures
+            this.user.id = res.data._id
           } catch (e) {
             console.error(e);
           }
         },
-        setDesc(desc) {
-          this.selectedTrs = desc
-        }
       },
       computed: {
         getPoint() {
