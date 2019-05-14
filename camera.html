@@ -38,6 +38,18 @@
   </a-scene>
 
   <script type="text/javascript">
+    const userInfoStr = localStorage.getItem('userInfo')
+    let user = {}
+    if (userInfoStr) {
+      try {
+      const userInfo = JSON.parse(userInfoStr);
+      user = { ...userInfo, auth: true }
+      console.log(user)
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
     const BASE_URL = 'http://localhost:8080/api';
     const token = '23214688caa06af8df76e874cd9ad789244f5cda'
     const userID = '5cd21ee31585bb00298c13c3'
@@ -57,12 +69,16 @@
         window.alert('Success add Ubbu')
         // window.location.assign(redirURL);
       })
+      .catch(e => {
+        console.error(e)
+        window.alert(e.response.data.message)
+      })
     }
 
     const ubbuDOM = document.querySelector("#ubbu");
     ubbuDOM.addEventListener('click', addTrs({
-      userID,
-      token,
+      userID: user._id,
+      token: user.token,
       trsName: ubbuInfo.trsName,
       redirURL: ubbuInfo.redirURL
     }));
