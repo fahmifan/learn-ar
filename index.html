@@ -87,7 +87,7 @@
 
 <body style="font-family:Arial, Helvetica, sans-serif; background-color: #f5f5f5;">
   <div id="app">
-    <span v-if='user.auth'>
+    <template v-if='user.auth'>
       <div class="top-bar">
         <span>App</span>
         <div style="display: flex; align-items: center;">
@@ -117,23 +117,51 @@
       <h2 style="text-align: right; margin-right: 16px;">{{ getOpenTreasure }}/{{ treasures.length }}</h2>
 
       <p style="text-align: center">{{ trsDesc }}</p>
-    </span>
-    <span v-else>
-      <h1>Login</h1>
-      <form style='padding: 16px'>
-        <div style='padding: 8px'>
-          <label for="email"><small>Email</small></label> <br />
-          <input name='email' type='email' v-model='user.email' placeholder='youremail@domain.com' />
-        </div>
+    </template>
+    <template v-else>
 
-        <div style='padding: 8px'>
-          <label for="password"><small>Password</small></label> <br />
-          <input name='password' type='password' v-model='user.password' />
-        </div>
+      <template v-if="isLoginPage">
+        <h1>Login</h1>
+        <form style='padding: 16px'>
+          <div style='padding: 8px'>
+            <label for="email"><small>Email</small></label> <br />
+            <input name='email' type='email' v-model='user.email' placeholder='youremail@domain.com' />
+          </div>
+  
+          <div style='padding: 8px'>
+            <label for="password"><small>Password</small></label> <br />
+            <input name='password' type='password' v-model='user.password' />
+          </div>
+  
+          <button type='submit' style='margin: 8px 8px' v-on:click="auth">Submit</button>
+          <a v-on:click="setLogin(false)">Register ?</button>
+        </form>
+      </template>
 
-        <button type='submit' style='margin: 8px 8px' v-on:click="auth">Submit</button>
-      </form>
-    </span>
+      <template v-else>
+          <h1>Register</h1>
+          <form style='padding: 16px'>
+            <div style='padding: 8px'>
+              <label for="name"><small>Name</small></label> <br />
+              <input name='name' type='name' v-model='user.name' placeholder='Your Name' />
+            </div>
+
+            <div style='padding: 8px'>
+              <label for="email"><small>Email</small></label> <br />
+              <input name='email' type='email' v-model='user.email' placeholder='youremail@domain.com' />
+            </div>
+    
+            <div style='padding: 8px'>
+              <label for="password"><small>Password</small></label> <br />
+              <input name='password' type='password' v-model='user.password' />
+            </div>
+    
+            <button type='submit' style='margin: 8px 8px' v-on:click="register">Submit</button>
+            <a v-on:click="setLogin(true)">Login ?</a>
+          </form>  
+      </template>
+
+    </template>
   </div>
 
   <script>
@@ -141,12 +169,14 @@
     const app = new Vue({
       el: '#app',
       data: {
+        isLoginPage: true,
         message: 'Hello Vuejs',
         user: {
           id: '5cd21ee31585bb00298c13c3',
           token: '23214688caa06af8df76e874cd9ad789244f5cda',
           email: '',
           password: '',
+          name: '',
         },
         trsDesc: '',
         treasures: [],
@@ -170,6 +200,9 @@
         },
         setLockedTrs() {
           this.trsDesc = 'Locked'
+        },
+        setLogin(isLogin) {
+          this.isLoginPage = isLogin 
         },
         async auth(e) {
           e.preventDefault();
@@ -198,6 +231,35 @@
               return
             }
             window.alert('email or password incorect')
+            console.error();
+          }
+        },
+        async register(e) {
+          e.preventDefault();
+          const email = this.user.email
+          const password = this.user.password
+          const name = this.user.name
+          if (!email || !password || !name) {
+            window.alert('name, email or password is invalid')
+            return;
+          }
+
+          try {
+            const { data } = await axios(`${BASE_URL}/user`, {
+              method: 'POST',
+              data: { email, password, name } 
+            })
+            window.alert('success register')
+
+            // move to login
+            this.isLoginPage = true
+
+          } catch (e) {
+            if (e.response.status === 500) {
+              window.alert('system error')
+              return
+            }
+            window.alert('name, email or password incorect')
             console.error();
           }
         },
