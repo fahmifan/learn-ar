@@ -67,19 +67,19 @@
     }
 
     #chest-filled {
-      width: 48px;
-      height: 48px;
-      margin: 8px;
+      width: 64px;
+      height: 64px;
+      margin: 4px;
       background: url(icons/treasure-chest.png);
       background-size: cover;
       background-position-x: -10px;
     }
 
     #chest {
-      width: 48px;
-      height: 48px;
+      width: 64px;
+      height: 64px;
       background: #777;
-      margin: 8px;
+      margin: 4px;
       background-size: cover;
     }
   </style>
@@ -105,7 +105,7 @@
           <div v-on:click="setLockedTrs()" id="chest-filled" v-if="!tr.isUnlocked"></div>  
           <div v-else v-on:click="setTrsDesc(tr.description)" v-bind:title="tr.description" id="chest" style="color: white; display: flex; justify-content: center; align-items: center;">
             <!-- {{ tr.name }} -->
-            <img style="height: 50px;" v-bind:src="'http://localhost:8080/' + tr.logo" alt="" srcset="">
+            <img style="height: 64px;" v-bind:src="'http://localhost:8080/' + tr.logo" alt="" srcset="">
           </div>
         </div>
       </div>
