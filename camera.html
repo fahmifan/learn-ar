@@ -8,30 +8,63 @@
   <!-- <script src="js/aframe-ar.js"></script>
   <script src="/js/aframe.min.js"></script> -->
   <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
+  <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
   <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.6.2/aframe/build/aframe-ar.js"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body style="font-family:Arial, Helvetica, sans-serif; background-color: #f5f5f5; margin: 0px;">
-  <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false'>
+  <a-scene renderer="precision: mediump;" embedded arjs='sourceType: webcam; debugUIEnabled: false'>
     <a-entity camera>
       <a-entity cursor="fuse: false"  position="0 0 -1"   geometry="primitive:ring; radiusInner: 0.02; radiusOuter: 0.02"  material="color: black; shader: flat"></a-ring>
     </a-entity>
 
-    <a-marker preset='hiro'>
-      <a-entity 
-        id="chest"
-        obj-model="obj: url(model/model.obj);
-        mtl: url(model/materials.mtl)">
-      </a-entity>
-    </a-marker>  
-
     <a-marker type='pattern' url='model/ar-marker.patt'>
       <a-entity 
+        id="usbu"
+        gltf-model="src: url(model/USBU.gltf);"
+        >
+      </a-entity>
+    </a-marker>
+
+    <a-marker type='pattern' url='model/bridge-marker.patt'>
+      <a-entity 
+        id="bridge"
+        gltf-model="src: url(model/Bridge.gltf);"
+        >
+      </a-entity>
+    </a-marker>
+
+    <a-marker type='pattern' url='model/psm-marker.patt'>
+      <a-entity 
+        id="psm"
+        gltf-model="src: url(model/PSM.gltf);"
+        >
+      </a-entity>
+    </a-marker>
+
+    <a-marker type='pattern' url='model/taekwondo-marker.patt'>
+      <a-entity 
+        id="taekwondo"
+        gltf-model="src: url(model/Taekwondo.gltf);"
+        >
+      </a-entity>
+    </a-marker>
+
+    <a-marker type='pattern' url='model/utmu-marker.patt'>
+      <a-entity 
+        id="utmu"
+        gltf-model="src: url(model/UTMU.gltf);"
+        >
+      </a-entity>
+    </a-marker>
+
+    <a-marker type='pattern' url='model/ubbu-marker.patt'>
+      <a-entity 
         id="ubbu"
-        obj-model="obj: url(model/ubbu.obj);
-        mtl: url(model/ubbu.mtl)">
+        gltf-model="src: url(model/UBBU.gltf);"
+        >
       </a-entity>
     </a-marker>
 
@@ -51,14 +84,10 @@
     }
 
     const BASE_URL = 'http://localhost:8080/api';
-    const token = '23214688caa06af8df76e874cd9ad789244f5cda'
-    const userID = '5cd21ee31585bb00298c13c3'
-    const ubbuInfo = {
-      trsName: '5cd8125eb1853a001c672837',
-      redirURL: 'https://m.facebook.com/pages/Unit-Bola-Basket-Unpad-UBBU/456487121139671?rf=247059598781827'
-    }
+    // const token = '23214688caa06af8df76e874cd9ad789244f5cda'
+    // const userID = '5cd21ee31585bb00298c13c3'
 
-    const addTrs = ({ userID, trsName, token, redirURL }) => () => {
+    const addTrs = ({ userID = user._id, token = user.token, trsName, redirURL }) => () => {
       console.log('clicked', trsName)
       axios(`${BASE_URL}/user/${userID}/treasure/${trsName}`, {
         method: 'POST',
@@ -66,8 +95,7 @@
           'Authorization': token
         }
       }).then(() => {
-        window.alert('Success add Ubbu')
-        // window.location.assign(redirURL);
+        window.alert(`Success added ${trsName}`)
       })
       .catch(e => {
         console.error(e)
@@ -75,19 +103,80 @@
       })
     }
 
-    const ubbuDOM = document.querySelector("#ubbu");
-    ubbuDOM.addEventListener('click', addTrs({
+    const usbu = {
+      trsName: 'usbu' || '5cd8125eb1853a001c672837',
+      redirURL: 'https://m.facebook.com/pages/Unit-Bola-Basket-Unpad-UBBU/456487121139671?rf=247059598781827'
+    }
+    const usbuDOM = document.querySelector("#usbu");
+    usbuDOM.addEventListener('click', addTrs({
       userID: user._id,
       token: user.token,
-      trsName: ubbuInfo.trsName,
-      redirURL: ubbuInfo.redirURL
+      trsName: usbu.trsName,
+      redirURL: usbu.redirURL
     }));
 
-    const chest = document.querySelector("#chest");
-    chest.addEventListener('click', () => {
-      console.log('chest clicked');
-      window.location.replace('/');
-    });
+    // const ubtuInfo = {
+    //   trsName: 'ubtu' || '5cd21e0e69a719001ccebe81',
+    //   redirURL: "https://www.facebook.com/pages/UBTU-Unit-Bulutangkis-Unpad-/174322935922119",
+    // }
+    // const ubtu = document.querySelector("#ubtu");
+    // ubtu.addEventListener('click', addTrs({
+    //   userID: user._id,
+    //   token: user.token,
+    //   trsName: ubtuInfo.trsName,
+    //   redirURL: ubtuInfo.redirURL
+    // }));
+
+    const bridgeInfo = {
+      trsName: 'bridge',
+      redirURL: ''
+    }
+    const bridge = document.querySelector('#bridge')
+    bridge.addEventListener('click', addTrs({
+      trsName: bridgeInfo.trsName,
+      redirURL: bridgeInfo.redirURL,
+    }));
+
+    const psmInfo = {
+      trsName: 'psm',
+      redirURL: ''
+    }
+    const psm = document.querySelector('#psm')
+    psm.addEventListener('click', addTrs({
+      trsName: psmInfo.trsName,
+      redirURL: psmInfo.redirURL,
+    }));
+
+    const taekwondoInfo = {
+      trsName: 'taekwondo',
+      redirURL: ''
+    }
+    const taekwondo = document.querySelector('#taekwondo')
+    taekwondo.addEventListener('click', addTrs({
+      trsName: taekwondoInfo.trsName,
+      redirURL: taekwondoInfo.redirURL,
+    }));
+
+    const utmuInfo = {
+      trsName: 'utmu',
+      redirURL: ''
+    }
+    const utmu = document.querySelector('#utmu')
+    utmu.addEventListener('click', addTrs({
+      trsName: utmuInfo.trsName,
+      redirURL: utmuInfo.redirURL,
+    }));
+
+    ubbuInfo = {
+      name: 'ubbu',
+      redirURL: '',
+    }
+    const ubbu = document.querySelector('#ubbu')
+    ubbu.addEventListener('click', addTrs({
+      trsName: ubbuInfo.trsName,
+      redirURL: ubbuInfo.redirURL,
+    }));
+
   </script>
 </body>
 </html>

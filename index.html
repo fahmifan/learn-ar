@@ -94,6 +94,8 @@
           <img src="icons/baseline-star-24px.png" alt="" srcset="">
           <span style="margin-left: 8px;">{{ getPoint }} Point</span>
         </div>
+
+        <button v-on:click="logout()">Logout ?</button>
       </div>
     
       <h2 style="margin-left: 16px">Treasure</h2>
@@ -116,7 +118,9 @@
       
       <h2 style="text-align: right; margin-right: 16px;">{{ getOpenTreasure }}/{{ treasures.length }}</h2>
 
-      <p style="text-align: center">{{ trsDesc }}</p>
+      <div style="padding: 16px; padding-top: 0px; margin-bottom: 48px">
+        <p style="text-align: left">{{ trsDesc }}</p>
+      </div>
     </template>
     <template v-else>
 
@@ -203,6 +207,10 @@
         },
         setLogin(isLogin) {
           this.isLoginPage = isLogin 
+        },
+        logout() {
+          localStorage.removeItem('userInfo')
+          this.user.auth = false
         },
         async auth(e) {
           e.preventDefault();
