@@ -103,7 +103,10 @@
       <div id="treasure-list">
         <div v-for="(tr, idx) in treasures">
           <div v-on:click="setLockedTrs()" id="chest-filled" v-if="!tr.isUnlocked"></div>  
-          <div v-else v-on:click="setTrsDesc(tr.description)" v-bind:title="tr.description" id="chest" style="color: white; display: flex; justify-content: center; align-items: center;">{{ tr.name }}</div>
+          <div v-else v-on:click="setTrsDesc(tr.description)" v-bind:title="tr.description" id="chest" style="color: white; display: flex; justify-content: center; align-items: center;">
+            <!-- {{ tr.name }} -->
+            <img style="height: 50px;" v-bind:src="'http://localhost:8080/' + tr.logo" alt="" srcset="">
+          </div>
         </div>
       </div>
     
