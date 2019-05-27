@@ -27,6 +27,21 @@
       padding-left: 16px;
       color: white;
       padding-right: 16px;
+      font-size: 18px;
+      -webkit-box-shadow: 0px 4px 4px 0px rgba(204,204,204,1);
+      -moz-box-shadow: 0px 4px 4px 0px rgba(204,204,204,1);
+      box-shadow: 0px 4px 4px 0px rgba(204,204,204,1);
+    }
+
+    .top-bar_logout {
+      padding: 8px;
+      border-radius: 4px;
+      border: 0px;
+      background: white;
+      color: brown;
+      font-weight: bold;
+      min-width: 64px;
+      box-sizing: border-box;
     }
 
     .bottom-bar {
@@ -42,7 +57,9 @@
       background: brown;
       display: flex;
       justify-content: center;
-      /* align-items: center; */
+      -webkit-box-shadow: 0px -4px 4px 0px rgba(204,204,204,1);
+      -moz-box-shadow: 0px -4px 4px 0px rgba(204,204,204,1);
+      box-shadow: 0px -4px 4px 0px rgba(204,204,204,1);
     }
 
     .btn-bottom-bar {
@@ -82,6 +99,32 @@
       margin: 4px;
       background-size: cover;
     }
+
+    .login_input {
+      padding: 8px;
+      border: 0px;
+      border-radius: 4px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .login_label {
+      color: #444;
+    }
+
+    .login_submit {
+      padding: 8px;
+      border-radius: 4px;
+      border: 0px;
+      background: brown;
+      color: white;
+      min-width: 64px;
+      box-sizing: border-box;
+    }
+
+    .login_link {
+      color: #3575D3
+    }
   </style>
 </head>
 
@@ -89,13 +132,12 @@
   <div id="app">
     <template v-if='user.auth'>
       <div class="top-bar">
-        <span>App</span>
         <div style="display: flex; align-items: center;">
           <img src="icons/baseline-star-24px.png" alt="" srcset="">
           <span style="margin-left: 8px;">{{ getPoint }} Point</span>
         </div>
 
-        <button v-on:click="logout()">Logout ?</button>
+        <button class="top-bar_logout" v-on:click="logout()">Logout</button>
       </div>
     
       <h2 style="margin-left: 16px">Treasure</h2>
@@ -103,9 +145,8 @@
       <div id="treasure-list">
         <div v-for="(tr, idx) in treasures">
           <div v-on:click="setLockedTrs()" id="chest-filled" v-if="!tr.isUnlocked"></div>  
-          <div v-else v-on:click="setTrsDesc(tr.description)" v-bind:title="tr.description" id="chest" style="color: white; display: flex; justify-content: center; align-items: center;">
-            <!-- {{ tr.name }} -->
-            <img style="height: 64px;" v-bind:src="'http://localhost:8080/' + tr.logo" alt="" srcset="">
+          <div v-else v-on:click="setTrsDesc(tr.description, tr.longName)" v-bind:title="tr.description" id="chest" style="color: white; display: flex; justify-content: center; align-items: center;">
+            <img style="height: 64px;" v-bind:src="'http://localhost:9000/' + tr.logo" alt="" srcset="">
           </div>
         </div>
       </div>
@@ -122,57 +163,60 @@
       <h2 style="text-align: right; margin-right: 16px;">{{ getOpenTreasure }}/{{ treasures.length }}</h2>
 
       <div style="padding: 16px; padding-top: 0px; margin-bottom: 48px">
+        <h3 style="text-align: left; margin-left: 0px;">{{ trsTitle }}</h3>
         <p style="text-align: left">{{ trsDesc }}</p>
       </div>
     </template>
     <template v-else>
 
       <template v-if="isLoginPage">
-        <h1>Login</h1>
-        <form style='padding: 16px'>
-          <div style='padding: 8px'>
-            <label for="email"><small>Email</small></label> <br />
-            <input name='email' type='email' v-model='user.email' placeholder='youremail@domain.com' />
-          </div>
-  
-          <div style='padding: 8px'>
-            <label for="password"><small>Password</small></label> <br />
-            <input name='password' type='password' v-model='user.password' />
-          </div>
-  
-          <button type='submit' style='margin: 8px 8px' v-on:click="auth">Submit</button>
-          <a v-on:click="setLogin(false)">Register ?</button>
-        </form>
+        <div class="login">
+          <h1 style="color: #222; padding-left: 24px; margin-bottom: 0px">Login</h1>
+          <form style='padding: 16px'>
+            <div style='padding: 8px'>
+              <label class="login_label" for="email"><small>Email</small></label> <br />
+              <input class="login_input" name='email' type='email' v-model='user.email' placeholder='youremail@domain.com' />
+            </div>
+    
+            <div style='padding: 8px'>
+              <label class="login_label" for="password"><small>Password</small></label> <br />
+              <input class="login_input" name='password' type='password' v-model='user.password' />
+            </div>
+    
+            <button class="login_submit" type='submit' style='margin: 8px 8px' v-on:click="auth">Login</button>
+            <a class="login_link" v-on:click="setLogin(false)"><small>Register ?</small></button>
+          </form>
+        </div>
       </template>
 
       <template v-else>
-          <h1>Register</h1>
-          <form style='padding: 16px'>
-            <div style='padding: 8px'>
-              <label for="name"><small>Name</small></label> <br />
-              <input name='name' type='name' v-model='user.name' placeholder='Your Name' />
-            </div>
+        <h1 style="padding-left: 24px; margin-bottom: 0px">Register</h1>
+        <form style='padding: 16px'>
+          <div style='padding: 8px'>
+            <label class="login_label" for="name"><small>Name</small></label> <br />
+            <input class="login_input" name='name' type='name' v-model='user.name' placeholder='Your Name' />
+          </div>
 
-            <div style='padding: 8px'>
-              <label for="email"><small>Email</small></label> <br />
-              <input name='email' type='email' v-model='user.email' placeholder='youremail@domain.com' />
-            </div>
-    
-            <div style='padding: 8px'>
-              <label for="password"><small>Password</small></label> <br />
-              <input name='password' type='password' v-model='user.password' />
-            </div>
-    
-            <button type='submit' style='margin: 8px 8px' v-on:click="register">Submit</button>
-            <a v-on:click="setLogin(true)">Login ?</a>
-          </form>  
+          <div style='padding: 8px'>
+            <label class="login_label" for="email"><small>Email</small></label> <br />
+            <input class="login_input" name='email' type='email' v-model='user.email' placeholder='youremail@domain.com' />
+          </div>
+  
+          <div style='padding: 8px'>
+            <label class="login_label" for="password"><small>Password</small></label> <br />
+            <input class="login_input" name='password' type='password' v-model='user.password' />
+          </div>
+  
+          <button class="login_submit" type='submit' style='margin: 8px 8px' v-on:click="register">Register</button>
+          <a class="login_link" v-on:click="setLogin(true)"><small>Login ?</small></a>
+        </form>  
       </template>
 
     </template>
   </div>
 
   <script>
-    const BASE_URL = 'http://localhost:8080/api'
+    const BASE_URL = 'http://localhost:9000/api'
     const app = new Vue({
       el: '#app',
       data: {
@@ -186,6 +230,7 @@
           name: '',
         },
         trsDesc: '',
+        trsTitle: '',
         treasures: [],
       },
       created() {
@@ -202,8 +247,9 @@
         }
       },
       methods: {
-        setTrsDesc(desc) {
+        setTrsDesc(desc, title = '') {
           this.trsDesc = desc;
+          this.trsTitle = title;
         },
         setLockedTrs() {
           this.trsDesc = 'Locked'
@@ -241,8 +287,9 @@
               window.alert('system error')
               return
             }
+
             window.alert('email or password incorect')
-            console.error();
+            console.error(e);
           }
         },
         async register(e) {
