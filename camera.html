@@ -17,13 +17,14 @@
 <body style="font-family:Arial, Helvetica, sans-serif; background-color: #f5f5f5; margin: 0px;">
   <a-scene renderer="precision: mediump;" embedded arjs='sourceType: webcam; debugUIEnabled: false'>
     <a-entity camera>
-      <a-entity cursor="fuse: false"  position="0 0 -1"   geometry="primitive:ring; radiusInner: 0.02; radiusOuter: 0.02"  material="color: black; shader: flat"></a-ring>
+      <a-entity cursor="fuse: false"  position="0 0 -1"  geometry="primitive:ring; radiusInner: 0.02; radiusOuter: 0.02"  material="color: black; shader: flat"></a-ring>
     </a-entity>
 
     <a-marker type='pattern' url='model/ar-marker.patt'>
       <a-entity 
         id="usbu"
         gltf-model="src: url(model/USBU.gltf);"
+        animation-mixer
         >
       </a-entity>
     </a-marker>
@@ -32,6 +33,7 @@
       <a-entity 
         id="bridge"
         gltf-model="src: url(model/Bridge.gltf);"
+        animation-mixer
         >
       </a-entity>
     </a-marker>
@@ -40,6 +42,7 @@
       <a-entity 
         id="psm"
         gltf-model="src: url(model/PSM.gltf);"
+        animation-mixer
         >
       </a-entity>
     </a-marker>
@@ -48,6 +51,7 @@
       <a-entity 
         id="taekwondo"
         gltf-model="src: url(model/Taekwondo.gltf);"
+        animation-mixer
         >
       </a-entity>
     </a-marker>
@@ -56,6 +60,7 @@
       <a-entity 
         id="utmu"
         gltf-model="src: url(model/UTMU.gltf);"
+        animation-mixer
         >
       </a-entity>
     </a-marker>
@@ -64,6 +69,7 @@
       <a-entity 
         id="ubbu"
         gltf-model="src: url(model/UBBU.gltf);"
+        animation-mixer
         >
       </a-entity>
     </a-marker>
@@ -83,12 +89,15 @@
       }
     }
 
-    const BASE_URL = 'http://localhost:8080/api';
+    // const BASE_URL = 'http://localhost:9000/api';
+    const BASE_URL = 'https://shielded-shore-38831.herokuapp.com/api'
     // const token = '23214688caa06af8df76e874cd9ad789244f5cda'
     // const userID = '5cd21ee31585bb00298c13c3'
 
     const addTrs = ({ userID = user._id, token = user.token, trsName, redirURL }) => () => {
-      console.log('clicked', trsName)
+      const audio = new Audio('/model/test-audio.mp3');
+      audio.play();
+
       axios(`${BASE_URL}/user/${userID}/treasure/${trsName}`, {
         method: 'POST',
         headers: {
@@ -114,18 +123,6 @@
       trsName: usbu.trsName,
       redirURL: usbu.redirURL
     }));
-
-    // const ubtuInfo = {
-    //   trsName: 'ubtu' || '5cd21e0e69a719001ccebe81',
-    //   redirURL: "https://www.facebook.com/pages/UBTU-Unit-Bulutangkis-Unpad-/174322935922119",
-    // }
-    // const ubtu = document.querySelector("#ubtu");
-    // ubtu.addEventListener('click', addTrs({
-    //   userID: user._id,
-    //   token: user.token,
-    //   trsName: ubtuInfo.trsName,
-    //   redirURL: ubtuInfo.redirURL
-    // }));
 
     const bridgeInfo = {
       trsName: 'bridge',
@@ -168,7 +165,7 @@
     }));
 
     ubbuInfo = {
-      name: 'ubbu',
+      trsName: 'ubbu',
       redirURL: '',
     }
     const ubbu = document.querySelector('#ubbu')
