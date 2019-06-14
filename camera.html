@@ -97,7 +97,7 @@
     // const userID = '5cd21ee31585bb00298c13c3'
 
     const addTrs = ({ userID = user._id, token = user.token, trsName, redirURL }) => () => {
-      const audio = new Audio(`/model/record/${trsName}.3gpp`);
+      const audio = new Audio(`model/record/${trsName}.3gpp`);
       audio.play();
 
       axios(`${BASE_URL}/user/${userID}/treasure/${trsName}`, {
