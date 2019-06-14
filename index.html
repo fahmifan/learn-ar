@@ -145,7 +145,7 @@
       <div id="treasure-list">
         <div v-for="(tr, idx) in treasures">
           <div v-on:click="setLockedTrs()" id="chest-filled" v-if="!tr.isUnlocked"></div>  
-          <div v-else v-on:click="setTrsDesc(tr.description, tr.longName)" v-bind:title="tr.description" id="chest" style="color: white; display: flex; justify-content: center; align-items: center;">
+          <div v-else v-on:click="setTrsDesc(tr.description, tr.longName, tr.url)" v-bind:title="tr.description" id="chest" style="color: white; display: flex; justify-content: center; align-items: center;">
             <img style="height: 64px;" v-bind:src="serviceUrl + tr.logo" alt="" srcset="">
           </div>
         </div>
@@ -164,6 +164,7 @@
 
       <div style="padding: 16px; padding-top: 0px; margin-bottom: 48px">
         <h3 style="text-align: left; margin-left: 0px;">{{ trsTitle }}</h3>
+        <a v-bind:href="trsURL" target='blank'>{{ trsURL ? 'Visit web' : '' }}</a>
         <p style="text-align: left">{{ trsDesc }}</p>
       </div>
     </template>
@@ -233,6 +234,7 @@
           name: '',
         },
         trsDesc: '',
+        trsURL: '',
         trsTitle: '',
         treasures: [],
       },
@@ -250,9 +252,10 @@
         }
       },
       methods: {
-        setTrsDesc(desc, title = '') {
+        setTrsDesc(desc, title = '', url = '') {
           this.trsDesc = desc;
           this.trsTitle = title;
+          this.trsURL = url;
         },
         setLockedTrs() {
           this.trsDesc = 'Locked'
