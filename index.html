@@ -146,7 +146,7 @@
         <div v-for="(tr, idx) in treasures">
           <div v-on:click="setLockedTrs()" id="chest-filled" v-if="!tr.isUnlocked"></div>  
           <div v-else v-on:click="setTrsDesc(tr.description, tr.longName)" v-bind:title="tr.description" id="chest" style="color: white; display: flex; justify-content: center; align-items: center;">
-            <img style="height: 64px;" v-bind:src="'http://localhost:9000/' + tr.logo" alt="" srcset="">
+            <img style="height: 64px;" v-bind:src="serviceUrl + tr.logo" alt="" srcset="">
           </div>
         </div>
       </div>
@@ -156,7 +156,7 @@
           <img src="icons/btn-scan.svg">
         </a>
         <a href="index.html" class="btn-bottom-bar">
-          <img src="icons//btn-treasure.svg">
+          <img src="icons/btn-treasure.svg">
         </a>
       </div>
       
@@ -217,10 +217,12 @@
 
   <script>
     // const BASE_URL = 'http://localhost:9000/api'
-    const BASE_URL = 'https://shielded-shore-38831.herokuapp.com/api'
+    const SERVICE_URL = 'https://shielded-shore-38831.herokuapp.com'
+    const BASE_URL = `${SERVICE_URL}/api`
     const app = new Vue({
       el: '#app',
       data: {
+        serviceUrl: SERVICE_URL + '/',
         isLoginPage: true,
         message: 'Hello Vuejs',
         user: {
